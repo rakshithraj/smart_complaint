@@ -1,6 +1,7 @@
 <?php 
  require_once('loader.php');
- 
+  
+  
        $Email   = urldecode($_POST['Email']);
        $Password   = urldecode($_POST['Password']);
        $Name  = urldecode($_POST['Name']);
@@ -10,18 +11,27 @@
 		$State   = urldecode($_POST['State']);	 
 		  $sex   = urldecode($_POST['sex']);
        $GcmId   = urldecode($_POST['GcmId']);
-  
-	   $res=isUserExisted($Email);
-	 
-	    if($res){
-	    echo "user_exits";
+      $profile_pic   = urldecode($_POST['profile_pic']);
+	  
+	   $facebook=false;
+	    if( isset($_POST['Type']) ){
+		 $facebook=true;
 		}
-		
-	 else{
-       $res = storeUser( $Email, $Password, $Name,$Age,$Contact,$City,$State,$sex,$GcmId);
-	   if($res)
-	      echo "inserted";
-		else
-		 echo "insert_failed"; 
+	   $res=isUserExisted($Email);
+	  
+	    if($res){
+		  if($facebook){
+		     updateUser( $Email, $Password, $Name,$Age,$Contact,$City,$State,$sex,$GcmId,$profile_pic);
+		    getUserDetail($Email); 
+			}
+		  else
+	        echo "user_exits";
+		}		
+	   else{
+	   if($facebook){
+          $res = storeFacebookUser( $Email, $Password, $Name,$Age,$Contact,$City,$State,$sex,$GcmId,$profile_pic);
+		  }else
+		  $res = storeUser( $Email, $Password, $Name,$Age,$Contact,$City,$State,$sex,$GcmId,$profile_pic);
+	      getUserDetail($Email); 
 	   }  
  ?>
